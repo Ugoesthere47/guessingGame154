@@ -1,0 +1,157 @@
+syish
+syish.
+Online
+CMPR154 Final Project Group
+
+maguirre
+ added 
+jfreelander99
+ to the group.
+ — 04/17/2024 8:02 PM
+maguirre
+ changed the channel name: 
+CMPR154 Final Project Group
+ — 04/17/2024 8:02 PM
+maguirre — 05/12/2024 8:52 PM
+Hey guys, I've been working on our project and I've attached what I've accomplished so far as both a text file and source code. If you guys have time, let me know what you guys think of it.
+;------------------------------------------------------------
+; Program Description:
+;
+; Matias Aguirre
+; CMPR - 154 - Spring 2024
+; April 9, 2024
+Expand
+FinalProjectTextCode.txt
+4 KB
+Attachment file type: code
+Irvine.asm
+3.58 KB
+I added as many comments as I could to clear stuff up and got through options 1, 2, and 5
+Still need to work on options 3 and 4
+﻿
+;------------------------------------------------------------
+; Program Description:
+;
+; Matias Aguirre
+; CMPR - 154 - Spring 2024
+; April 9, 2024
+; Language: IA-32- X86
+; Assembler: Microsoft Macro Assembler - MASM
+; Collaboration: None
+;----------------------------------------------------------
+
+INCLUDE IRVINE32.INC
+
+.data		; (insert variables here)
+teamName BYTE "Avengers Assembly" ,0dh,0ah,0dh,0ah,0dh,0ah ,0
+menu BYTE " *** MAIN MENU ***" ,0dh,0ah,0dh,0ah
+     BYTE "Please Select one of the following: " ,0dh,0ah,0dh,0ah
+	 BYTE "   1: Display my available credit" ,0dh,0ah
+	 BYTE "   2: Add credits to my account" ,0dh,0ah
+	 BYTE "   3: PLay the guessing game" ,0dh,0ah
+	 BYTE "   4: Display my statistics" ,0dh,0ah
+	 BYTE "   5: To exit",0dh,0ah,0dh,0ah
+	 BYTE "Enter your choice: ",0
+goodbyeMsg BYTE "Thank you for playing. Ending Program.",0
+
+
+; ERROR MESSAGES
+tooManyCredits BYTE "=> Error: Maximum allowable credits is $20.00. Please enter a different amount and try again. ",0dh,0ah,0
+invalidOption BYTE "=> Error: Invalid menu option. Please enter a correct menu option."
+
+
+; VARIABLES FOR PROMPTING
+availableBalance BYTE "=> Your available balance is: $",0
+promptBalance BYTE "=> Please enter the amount you would like to add: ",0
+
+
+; NUMBER VARIABLES
+userChoice BYTE ?
+balance WORD 0			; stores the avaliable credit
+MAX_ALLOWED EQU 20		; maximum amount of credits to be added
+amount WORD	0			; amount of credit entered by user
+correctGuesses BYTE 0   ; number of times user guessed number correctly
+missedGuesses BYTE 0	; number of times user guessed number incorrectly
+
+
+.code		; (insert executable instructions here)
+main proc	
+
+mov edx,OFFSET teamName						;prints Team Name
+	call WriteString	
+
+programLoop:
+	mov edx,OFFSET menu						;prints menu
+	call WriteString
+
+
+	call ReadDec							;collects inputed choice
+	mov userChoice, al					    ;userChoice contains user's input
+
+	mov al, 1								;switch statement (move into al to compare with userChoice)
+	CMP al, userChoice					
+	JE option1								;if user inputted 1, take them to option 1
+	mov al, 2
+	CMP al, userChoice
+	JE option2								;if user inputted 2, take them to option 2
+	mov al, 3
+	CMP al, userChoice
+	JE option3								;if user inputted 3, take them to option 3
+	mov al, 4
+	CMP al, userChoice
+	JE option4								;if user inputted 4, take them to option 4
+	mov al, 5							
+	CMP al, userChoice
+	JE exitOption							;if user inputted 5, take them to exitOption
+	JMP option6								;if user inputted an invalid option
+
+	option1:
+		mov edx,OFFSET availableBalance		;print sentence before balance
+		call WriteString
+		mov ax, balance						;print balance
+		call WriteDec						
+		call crlf
+		call crlf
+		call crlf
+		JMP ProgramLoop						;go back to menu
+	option2:
+		mov edx,OFFSET promptBalance		;prints sentence asking to insert balance
+		call WriteString	
+		call ReadDec						;read console for balance to add
+		mov amount, ax
+		add ax, balance
+		CMP	ax, MAX_ALLOWED			     	;check to make sure inputted value is <= 20
+		JBE	belowMax						;amount + balance <= 20
+
+		mov edx,OFFSET tooManyCredits	    ;amount + balance > 20
+		call WriteString
+		JMP option2
+
+		belowMax:							;below max so set new balance
+			mov ax, balance
+			add ax, amount
+			mov balance, ax
+			JMP programLoop				
+	option3:
+
+		JMP ProgramLoop
+	option4:
+
+		JMP ProgramLoop
+	option6:
+		mov edx,OFFSET invalidOption
+		JMP programLoop
+
+exitOption:
+mov edx,OFFSET goodbyeMsg					;exitting messages and program
+call WriteString
+call crlf
+
+exit
+main endp	; (insert additional procedures here)
+
+
+
+end main
+FinalProjectTextCode.txt
+4 KB
